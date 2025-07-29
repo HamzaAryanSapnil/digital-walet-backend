@@ -15,6 +15,7 @@ interface EnvConfig {
   BCRYPT_SALT_ROUND: string;
   ADMIN_EMAIL: string;
   ADMIN_PASSWORD: string;
+  ADMIN_PHONE: string;
 
   FRONTEND_URL: string;
 
@@ -37,8 +38,9 @@ const loadEnvVariables = (): EnvConfig => {
     "JWT_REFRESH_EXPIRES",
 
     "BCRYPT_SALT_ROUND",
-    "SUPER_ADMIN_EMAIL",
-    "SUPER_ADMIN_PASSWORD",
+    "ADMIN_EMAIL",
+    "ADMIN_PASSWORD",
+    "ADMIN_PHONE",
 
     "FRONTEND_URL",
 
@@ -58,6 +60,7 @@ const loadEnvVariables = (): EnvConfig => {
     // eslint-disable-next-line no-console
     console.log({
       callback: process.env.GOOGLE_CALLBACK_URL,
+      nodeEnv: process.env.NODE_ENV
     });
   }
 
@@ -72,8 +75,9 @@ const loadEnvVariables = (): EnvConfig => {
     JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET as string,
     JWT_REFRESH_EXPIRES: process.env.JWT_REFRESH_EXPIRES as string,
 
-    SUPER_ADMIN_EMAIL: process.env.SUPER_ADMIN_EMAIL as string,
-    SUPER_ADMIN_PASSWORD: process.env.SUPER_ADMIN_PASSWORD as string,
+    ADMIN_EMAIL: process.env.ADMIN_EMAIL as string,
+    ADMIN_PASSWORD: process.env.ADMIN_PASSWORD as string,
+    ADMIN_PHONE: process.env.ADMIN_PHONE as string,
 
     FRONTEND_URL: process.env.FRONTEND_URL as string,
 

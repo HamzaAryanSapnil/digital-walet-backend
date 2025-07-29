@@ -37,8 +37,8 @@ const loadEnvVariables = (): EnvConfig => {
     "JWT_REFRESH_EXPIRES",
 
     "BCRYPT_SALT_ROUND",
-    "SUPER_ADMIN_EMAIL",
-    "SUPER_ADMIN_PASSWORD",
+    "ADMIN_EMAIL",
+    "ADMIN_PASSWORD",
 
     "FRONTEND_URL",
 
@@ -72,8 +72,8 @@ const loadEnvVariables = (): EnvConfig => {
     JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET as string,
     JWT_REFRESH_EXPIRES: process.env.JWT_REFRESH_EXPIRES as string,
 
-    SUPER_ADMIN_EMAIL: process.env.SUPER_ADMIN_EMAIL as string,
-    SUPER_ADMIN_PASSWORD: process.env.SUPER_ADMIN_PASSWORD as string,
+    ADMIN_EMAIL: process.env.SUPER_ADMIN_EMAIL as string,
+    ADMIN_PASSWORD: process.env.SUPER_ADMIN_PASSWORD as string,
 
     FRONTEND_URL: process.env.FRONTEND_URL as string,
 

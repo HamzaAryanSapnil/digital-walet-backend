@@ -2,23 +2,28 @@
 import bcrypt from "bcryptjs";
 import { envVars } from "../config/env";
 import { User } from "../modules/user/user.model";
-import { IAuthProvider, IUser, Role, UserStatus } from "../modules/user/user.interface";
+import {
+  IAuthProvider,
+  IUser,
+  Role,
+  UserStatus,
+} from "../modules/user/user.interface";
 
 export const seedAdmin = async () => {
   try {
-    const isSuperAdminExists = await User.findOne({
+    const isAdminExists = await User.findOne({
       email: envVars.ADMIN_EMAIL,
     });
 
-    if (isSuperAdminExists) {
+    if (isAdminExists) {
       if (envVars.NODE_ENV === "development") {
-        console.log("Super Admin Already Exists");
+        console.log("Admin Already Exists");
       }
       return;
     }
 
     if (envVars.NODE_ENV === "development") {
-      console.log("Trying to create super admin...");
+      console.log("Trying to create an admin...");
     }
 
     const hashedPassword = await bcrypt.hash(
@@ -45,7 +50,7 @@ export const seedAdmin = async () => {
     const admin = await User.create(payload);
 
     if (envVars.NODE_ENV === "development") {
-      console.log("Super Admin Created Successfully \n");
+      console.log("Admin Created Successfully \n");
       console.log(admin);
     }
   } catch (error) {

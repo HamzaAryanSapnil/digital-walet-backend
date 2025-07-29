@@ -13,8 +13,8 @@ interface EnvConfig {
   JWT_REFRESH_EXPIRES: string;
 
   BCRYPT_SALT_ROUND: string;
-  SUPER_ADMIN_EMAIL: string;
-  SUPER_ADMIN_PASSWORD: string;
+  ADMIN_EMAIL: string;
+  ADMIN_PASSWORD: string;
 
   FRONTEND_URL: string;
 

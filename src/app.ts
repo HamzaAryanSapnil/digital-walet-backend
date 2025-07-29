@@ -1,12 +1,12 @@
 import express, { Request, Response } from "express";
 import cors from "cors";
-import { router } from "./app/routes";
-import { globalErrorHandlers } from "./app/middlewares/global.error.handlers";
-import notFound from "./app/middlewares/notFound";
 import cookieParser from "cookie-parser";
 import passport from "passport";
 import expressSession from "express-session";
 import "./app/config/passport";
+import { globalErrorHandlers } from "./app/middlewares/global.error.handlers";
+import notFound from "./app/middlewares/notFound";
+import { router } from "./app/routes";
 
 const app = express();
 

@@ -38,6 +38,14 @@ This project is a feature-rich RESTful API developed using **TypeScript**, **Exp
   - `amount`, `from`, `to`
   - Timestamps
 
+### 💡 Extra Features
+
+- 💸 **Agent Commission System**  
+  - 1% commission on every cash-out operation  
+  - Commission is credited to the agent’s wallet  
+  - Agents can view their commission history via  
+    `GET /api/v1/transactions/commissions`
+
 ---
 
 ## 🛠️ Tech Stack
@@ -100,6 +108,8 @@ tsconfig.json
 ### Agent
 - `PATCH /wallets/agent/cash-in` — Cash-in (requires approval)
 - `PATCH /wallets/agent/cash-out` — Cash-out (requires approval)
+- Agents can view their commission history via  
+    `GET /api/v1/transactions/commissions`
 
 ### Admin
 - `GET /admin/all-wallets` — View all wallets

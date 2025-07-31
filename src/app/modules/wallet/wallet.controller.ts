@@ -7,6 +7,22 @@ import { catchAsync } from "../../utils/catchAsync";
 import { JwtPayload } from "jsonwebtoken";
 import { WalletServices } from "./waller.service";
 
+
+
+
+
+const getAllWallets = catchAsync(async (req: Request, res: Response) => {
+  const result = await WalletServices.getAllWallets();
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "All wallets retrieved successfully",
+    data: result,
+  });
+});
+
+
 const getMyWallet = catchAsync(async (req: Request, res: Response) => {
   const user = req.user as JwtPayload;
   console.log("User id from get my wallet: ", user.userId);
@@ -130,6 +146,7 @@ const unblockWallet = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const WalletControllers = {
+  getAllWallets,
   getMyWallet,
   depositToMyWallet,
   withdrawFromMyWallet,

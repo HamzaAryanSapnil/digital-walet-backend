@@ -44,5 +44,10 @@ router.get(
   checkAuth(Role.ADMIN),
   TransactionControllers.getAllTransactions
 );
+router.get(
+  "/all-wallets",
+  checkAuth(Role.ADMIN),
+  WalletControllers.getAllWallets
+);
 
 export const AdminRoutes = router;

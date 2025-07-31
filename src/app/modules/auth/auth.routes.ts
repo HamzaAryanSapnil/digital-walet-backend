@@ -1,8 +1,11 @@
-import { NextFunction, Request, Response, Router } from "express";
-import passport from "passport";
+import { Router } from "express";
+
 import { AuthControllers } from "./auth.controller";
 import { checkAuth } from "../../middlewares/checkAuth";
 import { Role } from "../user/user.interface";
+import { validateRequest } from "../../middlewares/validate.request";
+import { createUserZodSchema } from "../user/user.validation";
+import { UserControllers } from "../user/user.controller";
 
 const router = Router();
 
@@ -15,20 +18,12 @@ router.post(
   AuthControllers.resetPassword
 );
 
-router.get(
-  "/google",
-  async (req: Request, res: Response, next: NextFunction) => {
-    const redirect = req.query.redirect || "/";
-    passport.authenticate("google", {
-      scope: ["profile", "email"],
-      state: redirect as string,
-    })(req, res, next);
-  }
+router.post(
+  "/register",
+  validateRequest(createUserZodSchema),
+  UserControllers.createUser
 );
 
-router.get(
-  "/google/callback",
-  passport.authenticate("google", { failureRedirect: "/login" })
-);
+
 
 export const AuthRoutes = router;

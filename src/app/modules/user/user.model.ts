@@ -1,4 +1,3 @@
-
 import mongoose, { model, Schema } from "mongoose";
 import { IAuthProvider, IUser, Role, UserStatus } from "./user.interface";
 
@@ -23,6 +22,7 @@ const userSchema = new Schema<IUser>(
     },
     password: {
       type: String,
+      required: true,
     },
     role: {
       type: String,
@@ -31,6 +31,8 @@ const userSchema = new Schema<IUser>(
     },
     phone: {
       type: String,
+      required: true,
+      unique: true,
     },
     status: {
       type: String,
@@ -47,6 +49,7 @@ const userSchema = new Schema<IUser>(
     },
     isApproved: {
       type: Boolean,
+      default: false,
     },
   },
   {
@@ -54,7 +57,6 @@ const userSchema = new Schema<IUser>(
     versionKey: false,
   }
 );
-
 
 // export const User = model<IUser>("User", userSchema);
 export const User = mongoose.models.User ?? model<IUser>("User", userSchema);

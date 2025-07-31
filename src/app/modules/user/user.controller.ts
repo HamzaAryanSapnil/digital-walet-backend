@@ -26,13 +26,15 @@ const getAllUsers = catchAsync(
 
 const createUser = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const user = await UserServices.createUser(req.body);
+    const userDoc = await UserServices.createUser(req.body);
+    const user = userDoc.toObject(); 
+    const {password, ...rest} = user;
 
     sendResponse(res, {
       success: true,
       statusCode: httpStatus.CREATED,
       message: "User Created Successfully",
-      data: user,
+      data: rest,
     });
   }
 );
@@ -66,8 +68,35 @@ const updateUser = catchAsync(
   }
 );
 
+const approveAgent = catchAsync(async (req, res) => {
+  const agentId = req.params.id;
+  const result = await UserServices.approveAgent(agentId);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: 200,
+    message: result.message,
+    data: result,
+  });
+});
+
+const suspendAgent = catchAsync(async (req, res) => {
+  const agentId = req.params.id;
+  const result = await UserServices.suspendAgent(agentId);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: 200,
+    message: result.message,
+    data: result,
+  });
+});
+
+
 export const UserControllers = {
   createUser,
   updateUser,
   getAllUsers,
+  approveAgent,
+  suspendAgent
 };

@@ -1,4 +1,3 @@
-
 import { User } from "./user.model";
 import httpStatus from "http-status-codes";
 import bcryptjs from "bcryptjs";
@@ -6,6 +5,8 @@ import { envVars } from "../../config/env";
 import { JwtPayload } from "jsonwebtoken";
 import { IAuthProvider, IUser, Role, UserStatus } from "./user.interface";
 import AppError from "../../error-helpers/app-error";
+import { Wallet } from "../wallet/wallet.model";
+import { WalletStatus } from "../wallet/wallet.interface";
 
 const getAllUsers = async () => {
   const users = await User.find({});
@@ -20,7 +21,6 @@ const getAllUsers = async () => {
 
 const createUser = async (payload: Partial<IUser>) => {
   const { email, password, ...rest } = payload;
-  
 
   const hashedPassword = await bcryptjs.hash(
     password as string,
@@ -38,6 +38,15 @@ const createUser = async (payload: Partial<IUser>) => {
     password: hashedPassword,
     auths: [authProvider],
   });
+
+  await Wallet.create({
+    user: user._id,
+    balance: 50,
+    status: WalletStatus.ACTIVE, // optional if default in schema
+  });
+
+ 
+
   return user;
 };
 
@@ -58,19 +67,27 @@ const updateUser = async (
 
   if (payload.role) {
     if (decodedToken.role === Role.USER || decodedToken.role === Role.AGENT) {
-      throw new AppError(httpStatus.FORBIDDEN, "You don't have permission to change user's role");
+      throw new AppError(
+        httpStatus.FORBIDDEN,
+        "You don't have permission to change user's role"
+      );
     }
-   
   }
 
   if (payload.status || payload.isVerified || payload.isApproved) {
     if (decodedToken.role === Role.USER || decodedToken.role === Role.AGENT) {
-      throw new AppError(httpStatus.FORBIDDEN, "You are not authorized or you don't have permission to take such kinds of actions");
+      throw new AppError(
+        httpStatus.FORBIDDEN,
+        "You are not authorized or you don't have permission to take such kinds of actions"
+      );
     }
   }
   if (payload.commissionRate) {
-    if (decodedToken.role === Role.USER ) {
-      throw new AppError(httpStatus.FORBIDDEN, "You are not authorized or you don't have permission to take such kinds of actions");
+    if (decodedToken.role === Role.USER) {
+      throw new AppError(
+        httpStatus.FORBIDDEN,
+        "You are not authorized or you don't have permission to take such kinds of actions"
+      );
     }
   }
 
@@ -89,8 +106,33 @@ const updateUser = async (
   return newUpdatedUser;
 };
 
+// user.service.ts
+
+const approveAgent = async (agentId: string) => {
+  const agent = await User.findOne({ _id: agentId, role: Role.AGENT });
+  if (!agent) throw new AppError(404, "Agent not found");
+
+  agent.isApproved = true;
+  await agent.save();
+
+  return { message: "Agent approved", agentId };
+};
+
+const suspendAgent = async (agentId: string) => {
+  const agent = await User.findOne({ _id: agentId, role: Role.AGENT });
+  if (!agent) throw new AppError(404, "Agent not found");
+
+  agent.isApproved = false;
+  await agent.save();
+
+  return { message: "Agent suspended", agentId };
+};
+
+
 export const UserServices = {
   createUser,
   getAllUsers,
   updateUser,
+  approveAgent,
+  suspendAgent
 };

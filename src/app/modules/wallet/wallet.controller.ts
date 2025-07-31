@@ -26,6 +26,8 @@ const depositToMyWallet = catchAsync(async (req: Request, res: Response) => {
   const amount = req.body.amount;
   const result = await WalletServices.deposit(user.userId, amount);
 
+
+
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.OK,
@@ -104,6 +106,7 @@ const agentCashOut = catchAsync(async (req: Request, res: Response) => {
 
 const blockWallet = catchAsync(async (req: Request, res: Response) => {
   const walletId = req.params.id;
+  
   const result = await WalletServices.blockWallet(walletId);
 
   sendResponse(res, {

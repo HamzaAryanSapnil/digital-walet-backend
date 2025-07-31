@@ -62,7 +62,7 @@ This project is a feature-rich RESTful API developed using **TypeScript**, **Exp
 ---
 
 ## 📁 Project Structure
-
+```
 src
 ├── app
 │ ├── config # Environment configs (e.g., database, secrets)
@@ -82,10 +82,7 @@ eslint.config.mjs
 package.json
 tsconfig.json
 
-yaml
-Copy
-Edit
-
+```
 ---
 
 ## 🧪 API Endpoints (Sample)
@@ -121,7 +118,91 @@ Edit
 
 ### 1. Clone the Repo
 
-```bash
-git clone https://github.com/your-username/digital-wallet-api.git
-cd digital-wallet-api
+```
+bash
+git clone https://github.com/your-username/digital-walet-backend.git
+cd digital-wallet-backend
+```
+### 2. Install Dependencies
+```
+bash
+npm install
+```
 
+## 3. Configure Environment Variables
+### Create a .env file and configure:
+```
+PORT=5000
+MONGODB_URI=your mongo uri
+NODE_ENV=development
+
+
+# JWT
+
+JWT_ACCESS_SECRET=access_secret
+JWT_ACCESS_EXPIRES=1d
+JWT_REFRESH_SECRET=JWT_REFRESH_SECRET
+JWT_REFRESH_EXPIRES=30d
+
+# bcrypt
+
+BCRYPT_SALT_ROUND=10
+
+
+
+#  Admin
+
+ADMIN_EMAIL=admin@gmail.com
+ADMIN_PASSWORD=your pass
+ADMIN_PHONE=your phone
+
+
+
+
+# Express session
+EXPRESS_SESSION_SECRET=express-session
+
+
+# Frontend Url
+FRONTEND_URL=http://localhost:5173
+```
+
+## 4. Start the Server
+
+### For Development:
+
+```bash
+npm run dev
+```
+### For Production:
+
+```bash
+npm run build
+npm run start
+```
+
+✅ Assignment Checklist
+* User deposit, withdraw, send money ✅
+
+* Agent cash-in and cash-out with approval ✅
+
+* Admin block/unblock wallet ✅
+
+* Admin approve/suspend agents ✅
+
+* Transaction logs maintained ✅
+
+* Role-based route protection ✅
+
+* Wallet created on registration ✅
+
+* Proper error and success handling ✅
+
+
+📫 Author
+Hamza Aryan Sapnil
+📍 Bangladesh
+🌐 LinkedIn • 💻 Full Stack Developer
+
+📄 License
+This project is licensed for educational purposes under MIT.

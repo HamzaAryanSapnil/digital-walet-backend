@@ -6,7 +6,7 @@ import { WalletControllers } from "./wallet.controller";
 const router = Router();
 
 // 🔐 Only for authenticated 'user' role
-router.get("/me", checkAuth(Role.USER), WalletControllers.getMyWallet);
+router.get("/me", checkAuth(Role.USER , Role.AGENT), WalletControllers.getMyWallet);
 router.post(
   "/deposit",
   checkAuth(Role.USER),
@@ -18,7 +18,7 @@ router.post(
   WalletControllers.withdrawFromMyWallet
 );
 router.post(
-  "/send",
+  "/send-money",
   checkAuth(Role.USER),
   WalletControllers.sendMoneyToAnotherUser
 );

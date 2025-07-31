@@ -10,6 +10,11 @@ import { logTransaction } from "../transaction/transaction.service";
 import { TransactionType } from "../transaction/transaction.interface";
 
 
+
+const getAllWallets = async () => {
+  return await Wallet.find({}).sort({ createdAt: -1 });
+};
+
 const getMyWallet = async (userId: Types.ObjectId) => {
   const wallet = await Wallet.findOne({ user: userId });
 
@@ -300,4 +305,5 @@ export const WalletServices = {
   cashOutFromUserWallet,
   blockWallet,
   unblockWallet,
+  getAllWallets,
 };

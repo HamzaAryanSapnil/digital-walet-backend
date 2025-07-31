@@ -35,15 +35,5 @@ router.post(
   WalletControllers.agentCashOut
 );
 
-router.patch(
-  "/admin/wallets/block/:id",
-  checkAuth(Role.ADMIN),
-  WalletControllers.blockWallet
-);
 
-router.patch(
-  "/admin/wallets/unblock/:id",
-  checkAuth(Role.ADMIN),
-  WalletControllers.unblockWallet
-);
 export const WalletRoutes = router;

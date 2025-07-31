@@ -45,6 +45,7 @@ export const seedAdmin = async () => {
       password: hashedPassword,
       auths: [authProvider],
       isVerified: true,
+      isApproved: true,
     };
 
     const admin = await User.create(payload);

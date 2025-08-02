@@ -56,10 +56,7 @@ const loadEnvVariables = (): EnvConfig => {
     }
   });
 
-  // eslint-disable-next-line no-console
-  console.log({
-    callback: process.env.GOOGLE_CALLBACK_URL,
-  });
+ 
 
   return {
     PORT: process.env.PORT as string,

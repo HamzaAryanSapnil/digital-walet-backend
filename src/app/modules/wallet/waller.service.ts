@@ -239,10 +239,20 @@ const cashOutFromUserWallet = async (
   }
 
 
-  const commission = amount * (agent.commissionRate || 0);
+  const commission = Number((amount * 0.01).toFixed(2));
 
   userWallet.balance -= amount;
   await userWallet.save();
+
+
+  const agentWallet = await Wallet.findOne({user: agentId })
+  if (!agentWallet) {
+    throw new AppError(httpStatus.NOT_FOUND, "Agent Wallet not found")
+  }
+
+  agentWallet.balance += commission;
+  await agentWallet.save();
+
 
   await logTransaction({
     type: TransactionType.CASH_OUT,
@@ -257,7 +267,8 @@ const cashOutFromUserWallet = async (
     userPhone,
     withdrawnAmount: amount,
     remainingBalance: userWallet.balance,
-    commission
+    commission,
+    agentBalance: agentWallet.balance
   };
 };
 

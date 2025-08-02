@@ -41,8 +41,19 @@ const getAllTransactions = async () => {
   return await Transaction.find({}).sort({ createdAt: -1 });
 };
 
+
+const getAgentCommission = async (agentId:string) => {
+  return await Transaction.find({
+    to: agentId,
+    commission: {$gt: 0},
+    type: TransactionType.CASH_OUT
+  }).sort({createdAt: -1})
+}
+
+
 export const TransactionServices = {
   logTransaction,
   getMyTransactions,
-  getAllTransactions
+  getAllTransactions,
+  getAgentCommission
 };

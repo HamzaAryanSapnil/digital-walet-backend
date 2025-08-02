@@ -25,7 +25,6 @@ const getAllWallets = catchAsync(async (req: Request, res: Response) => {
 
 const getMyWallet = catchAsync(async (req: Request, res: Response) => {
   const user = req.user as JwtPayload;
-  console.log("User id from get my wallet: ", user.userId);
 
   const result = await WalletServices.getMyWallet(user?.userId);
 

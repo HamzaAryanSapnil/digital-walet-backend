@@ -95,19 +95,21 @@ tsconfig.json
 
 ## 🧪 API Endpoints (Sample)
 
+Main api: https://digital-walet-backend.vercel.app/api/v1
+
 ### Auth
 - `POST /auth/register` — Register as user/agent/admin
 - `POST /auth/login` — Login and receive access token
 
 ### Wallet
 - `GET /wallets/me` — Get own wallet info
-- `PATCH /wallets/deposit` — Deposit money
-- `PATCH /wallets/withdraw` — Withdraw money
-- `PATCH /wallets/send-money` — Send money to another user
+- `POST /wallets/deposit` — Deposit money
+- `POST /wallets/withdraw` — Withdraw money
+- `POST /wallets/send-money` — Send money to another user
 
 ### Agent
-- `PATCH /wallets/agent/cash-in` — Cash-in (requires approval)
-- `PATCH /wallets/agent/cash-out` — Cash-out (requires approval)
+- `POST /wallets/agent/cash-in` — Cash-in (requires approval)
+- `POST /wallets/agent/cash-out` — Cash-out (requires approval)
 - Agents can view their commission history via  
     `GET /api/v1/transactions/commissions`
 
@@ -116,8 +118,8 @@ tsconfig.json
 - `GET /admin/all-transaction` — View all Transactions
 - `PATCH /admin/wallets/block/:id` — Block a wallet
 - `PATCH /admin/wallets/unblock/:id` — Unblock a wallet
-- `PATCH /admin/agents/approve/:id` — Approve agent
-- `PATCH /admin/agents/suspend/:id` — Suspend agent
+- `PATCH /admin/agents/approve/:id` — Approve agent (Agent's id)
+- `PATCH /admin/agents/suspend/:id` — Suspend agent (Agent's id)
 
 ### Transactions
 - `GET /transactions/me` — View own transactions

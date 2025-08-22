@@ -39,12 +39,7 @@ export const checkAuth =
         );
       }
 
-      if (!isUserExists.isVerified ) {
-        throw new AppError(
-          httpStatus.BAD_REQUEST,
-          `User is not verified `
-        );
-      }
+     
 
       // const {email, userId, role} = verifiedToken
 

@@ -29,7 +29,7 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: [envVars.FRONTEND_URL,],
+    origin: [envVars.FRONTEND_URL, "http://localhost:3000"],
     credentials: true,
   })
 );

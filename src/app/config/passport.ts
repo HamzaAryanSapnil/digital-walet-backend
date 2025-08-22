@@ -1,3 +1,5 @@
+
+
 import bcryptjs from "bcryptjs";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import passport from "passport";
@@ -5,7 +7,8 @@ import { Strategy as GoogleStrategy, Profile } from "passport-google-oauth20";
 import { envVars } from "./env";
 import { Strategy as LocalStrategy } from "passport-local";
 import { User } from "../modules/user/user.model";
-import { Role } from "../modules/user/user.interface";
+import { Role, UserStatus } from "../modules/user/user.interface";
+
 
 passport.use(
   new LocalStrategy(
@@ -22,10 +25,24 @@ passport.use(
         // }
 
         if (!isUserExists) {
-          return done("User doesn't exists");
+          return done(null, false, {
+            message: "User doesn't exists",
+          });
         }
 
-        
+        if (isUserExists.status === UserStatus.BLOCKED) {
+          // throw new AppError(
+          //   httpStatus.BAD_REQUEST,
+          //   `User is ${isUserExists.status}`
+          // );
+          return done(null, false, {
+            message: `User is ${isUserExists.status}`,
+          });
+        }
+
+        // if (!isUserExists.isVerified) {
+        //   return done(`User is not verified`);
+        // }
 
         const isPassMatched = await bcryptjs.compare(
           password as string,

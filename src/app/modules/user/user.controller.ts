@@ -28,7 +28,7 @@ const getSingleUser = catchAsync(
     sendResponse(res, {
       success: true,
       statusCode: httpStatus.OK,
-      message: "User Retrieved Successfully",
+      message: "Your Profile Retrieved Successfully",
       data: result.data,
     });
   }

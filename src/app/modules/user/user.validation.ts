@@ -31,7 +31,6 @@ export const createUserZodSchema = z.object({
     }),
   phone: z
     .string()
-    .optional()
     .refine(
       (val) => {
         if (val === undefined || val === null || val === "") {

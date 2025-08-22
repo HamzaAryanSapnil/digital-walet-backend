@@ -1,13 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-console */
-import httpStatus  from 'http-status-codes';
+import httpStatus from "http-status-codes";
 import { NextFunction, Request, Response } from "express";
 import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
-import { envVars } from '../../config/env';
-import { JwtPayload } from 'jsonwebtoken';
-import { UserServices } from './user.service';
-
+import { envVars } from "../../config/env";
+import { JwtPayload } from "jsonwebtoken";
+import { UserServices } from "./user.service";
 
 const getAllUsers = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -15,20 +14,44 @@ const getAllUsers = catchAsync(
 
     sendResponse(res, {
       success: true,
-      statusCode: httpStatus.CREATED,
+      statusCode: httpStatus.OK,
       message: "All Users Retrieved Successfully",
       data: result.data,
       meta: result.meta,
     });
   }
 );
+const getSingleUser = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
+    const result = await UserServices.getSingleUser(id);
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "User Retrieved Successfully",
+      data: result.data,
+    });
+  }
+);
+const getMe = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const decodedToken = req.user as JwtPayload;
+    const result = await UserServices.getMe(decodedToken.userId);
 
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "User Retrieved Successfully",
+      data: result.data,
+    });
+  }
+);
 
 const createUser = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const userDoc = await UserServices.createUser(req.body);
-    const user = userDoc.toObject(); 
-    const {password, ...rest} = user;
+    const user = userDoc.toObject();
+    const { password, ...rest } = user;
 
     sendResponse(res, {
       success: true,
@@ -92,11 +115,12 @@ const suspendAgent = catchAsync(async (req, res) => {
   });
 });
 
-
 export const UserControllers = {
   createUser,
   updateUser,
   getAllUsers,
+  getSingleUser,
   approveAgent,
-  suspendAgent
+  suspendAgent,
+  getMe,
 };

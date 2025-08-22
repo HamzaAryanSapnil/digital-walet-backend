@@ -1,10 +1,6 @@
 import z from "zod";
 import { UserStatus, Role } from "./user.interface";
 
-
-
-
-
 const bangladeshMobilePhoneRegex = /^(?:\+880|00880|0)?1[3-9]\d{8}$/;
 export const createUserZodSchema = z.object({
   name: z
@@ -30,7 +26,13 @@ export const createUserZodSchema = z.object({
       message: "Password must contain at least one special character.",
     }),
   phone: z
-    .string()
+    .string({
+      error: (issue) =>
+        issue.input === undefined || issue.input === null || issue.input === ""
+          ? "Phone number is required"
+          : "Not a string",
+    })
+
     .refine(
       (val) => {
         if (val === undefined || val === null || val === "") {
@@ -44,8 +46,6 @@ export const createUserZodSchema = z.object({
           "Invalid Bangladeshi phone number format. Examples: 01xxxxxxxxx, +8801xxxxxxxxx, 8801xxxxxxxxx",
       }
     ),
-    
-
 });
 export const updateUserZodSchema = z.object({
   name: z
@@ -72,8 +72,6 @@ export const updateUserZodSchema = z.object({
       message: "Password must contain at least one special character.",
     })
     .optional(),
-
- 
 
   status: z.enum(Object.values(UserStatus) as [string]).optional(),
 

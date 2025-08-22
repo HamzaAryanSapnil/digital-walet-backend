@@ -18,6 +18,19 @@ const getAllUsers = async () => {
     },
   };
 };
+const getSingleUser = async (id: string) => {
+  const user = await User.findById(id).select("-password");
+  return {
+    data: user,
+  };
+};
+const getMe = async (userId: string) => {
+  const user = await User.findById(userId).select("-password"); 
+ 
+  return {
+    data: user,
+  };
+};
 
 const createUser = async (payload: Partial<IUser>) => {
   const { email, password, ...rest } = payload;
@@ -132,7 +145,9 @@ const suspendAgent = async (agentId: string) => {
 export const UserServices = {
   createUser,
   getAllUsers,
+  getSingleUser,
   updateUser,
   approveAgent,
-  suspendAgent
+  suspendAgent,
+  getMe,
 };

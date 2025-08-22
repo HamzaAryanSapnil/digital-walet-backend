@@ -13,7 +13,11 @@ const router = Router();
 
 
 
-
+router.get(
+  "/me",
+  checkAuth(...Object.values(Role)),
+  UserControllers.getMe
+);
 
 router.patch(
   "/:id",

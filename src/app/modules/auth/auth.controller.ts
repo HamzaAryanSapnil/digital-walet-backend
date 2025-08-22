@@ -26,7 +26,8 @@ const credentialsLogin = catchAsync(
 
       const userTokens = createUserTokens(user);
 
-      delete user.toObject().password;
+       const userDoc = user.toObject();
+       const { password, ...rest } = userDoc;
 
       setAuthCookie(res, userTokens);
 
@@ -37,7 +38,7 @@ const credentialsLogin = catchAsync(
         data: {
           accessToken: userTokens.accessToken,
           refreshToken: userTokens.accessToken,
-          user,
+          user: rest,
         },
       });
     })(req, res, next);

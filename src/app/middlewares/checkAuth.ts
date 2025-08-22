@@ -30,16 +30,21 @@ export const checkAuth =
         throw new AppError(httpStatus.BAD_REQUEST, "User doesn't exists");
       }
 
-      if (
-        isUserExists.status === UserStatus.BLOCKED 
-      ) {
+     
+
+      if (isUserExists.status === UserStatus.BLOCKED) {
         throw new AppError(
           httpStatus.BAD_REQUEST,
           `User is ${isUserExists.status}`
         );
       }
 
-      
+      if (!isUserExists.isVerified ) {
+        throw new AppError(
+          httpStatus.BAD_REQUEST,
+          `User is not verified `
+        );
+      }
 
       // const {email, userId, role} = verifiedToken
 

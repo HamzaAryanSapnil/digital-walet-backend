@@ -1,4 +1,5 @@
-import { Request, Response } from "express";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { NextFunction, Request, Response } from "express";
 import httpStatus from "http-status-codes";
 import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
@@ -18,14 +19,18 @@ const getMyTransactions = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const getAllTransactions = catchAsync(async (req: Request, res: Response) => {
-  const result = await TransactionServices.getAllTransactions();
+const getAllTransactions = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  const query = req.query;
+      const result = await TransactionServices.getAllTransactions(
+        query as Record<string, string>
+      );
 
   sendResponse(res, {
+    statusCode: 200,
     success: true,
-    statusCode: httpStatus.OK,
-    message: "All transactions retrieved successfully",
-    data: result,
+    message: "All Transactions retrieved successfully",
+    data: result.data,
+    meta: result.meta,
   });
 });
 

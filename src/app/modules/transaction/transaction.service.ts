@@ -1,6 +1,11 @@
-import {  Transaction } from "./transaction.model";
-import { ITransaction, TransactionStatus, TransactionType } from "./transaction.interface";
+import { Transaction } from "./transaction.model";
+import {
+  ITransaction,
+  TransactionStatus,
+  TransactionType,
+} from "./transaction.interface";
 import { Types } from "mongoose";
+import { QueryBuilder } from "../../utils/QueryBuilder";
 
 export const logTransaction = async ({
   type,
@@ -14,8 +19,8 @@ export const logTransaction = async ({
   amount: number;
   fee?: number;
   commission?: number;
-  from?: Types.ObjectId ;
-  to?: Types.ObjectId ;
+  from?: Types.ObjectId;
+  to?: Types.ObjectId;
 }) => {
   const txnData: Partial<ITransaction> = {
     type,
@@ -37,23 +42,37 @@ const getMyTransactions = async (userId: string) => {
   }).sort({ createdAt: -1 });
 };
 
-const getAllTransactions = async () => {
-  return await Transaction.find({}).sort({ createdAt: -1 });
+const transactionSearchableFields = ["type", "amount", "status"];
+const getAllTransactions = async (query: Record<string, string>) => {
+  const queryBuilder = await new QueryBuilder(Transaction.find(), query ?? {});
+  const allTransactions = queryBuilder
+    .filter()
+    .search(transactionSearchableFields)
+    .sort()
+    .fields()
+    .paginate();
+  const [data, meta] = await Promise.all([
+    allTransactions.build(),
+    queryBuilder.getMeta(),
+  ]);
+
+  return {
+    data,
+    meta,
+  };
 };
 
-
-const getAgentCommission = async (agentId:string) => {
+const getAgentCommission = async (agentId: string) => {
   return await Transaction.find({
     to: agentId,
-    commission: {$gt: 0},
-    type: TransactionType.CASH_OUT
-  }).sort({createdAt: -1})
-}
-
+    commission: { $gt: 0 },
+    type: TransactionType.CASH_OUT,
+  }).sort({ createdAt: -1 });
+};
 
 export const TransactionServices = {
   logTransaction,
   getMyTransactions,
   getAllTransactions,
-  getAgentCommission
+  getAgentCommission,
 };

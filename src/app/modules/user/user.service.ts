@@ -134,6 +134,35 @@ const updateUser = async (
   return newUpdatedUser;
 };
 
+
+const blockUser = async (userId: string) => {
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, "User not found");
+  }
+
+  user.status = UserStatus.BLOCKED;
+  await user.save();
+
+  return {
+    message: "User blocked successfully",
+  };
+};
+
+const unblockUser = async (userId: string) => {
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, "User not found");
+  }
+
+  user.status = UserStatus.ACTIVE;
+  await user.save();
+
+  return {
+    message: "User unblocked successfully",
+  };
+};
+
 // user.service.ts
 
 const approveAgent = async (agentId: string) => {
@@ -156,11 +185,15 @@ const suspendAgent = async (agentId: string) => {
   return { message: "Agent suspended", agentId };
 };
 
+
+
 export const UserServices = {
   createUser,
   getAllUsers,
   getSingleUser,
   updateUser,
+  blockUser,
+  unblockUser,
   approveAgent,
   suspendAgent,
   getMe,

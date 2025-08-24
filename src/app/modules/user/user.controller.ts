@@ -10,15 +10,19 @@ import { UserServices } from "./user.service";
 
 const getAllUsers = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const result = await UserServices.getAllUsers();
+    const query = req.query;
+    const result = await UserServices.getAllUsers(
+      query as Record<string, string>
+    );
 
-    sendResponse(res, {
-      success: true,
-      statusCode: httpStatus.OK,
-      message: "All Users Retrieved Successfully",
-      data: result.data,
-      meta: result.meta,
-    });
+   
+     sendResponse(res, {
+       statusCode: 200,
+       success: true,
+       message: "Tours retrieved successfully",
+       data: result.data,
+       meta: result.meta,
+     });
   }
 );
 const getSingleUser = catchAsync(

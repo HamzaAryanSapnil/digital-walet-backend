@@ -15,14 +15,13 @@ const getAllUsers = catchAsync(
       query as Record<string, string>
     );
 
-   
-     sendResponse(res, {
-       statusCode: 200,
-       success: true,
-       message: "Tours retrieved successfully",
-       data: result.data,
-       meta: result.meta,
-     });
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Tours retrieved successfully",
+      data: result.data,
+      meta: result.meta,
+    });
   }
 );
 const getSingleUser = catchAsync(
@@ -95,6 +94,31 @@ const updateUser = catchAsync(
   }
 );
 
+const blockUser = catchAsync(async (req: Request, res: Response) => {
+  const walletId = req.params.id;
+
+  const result = await UserServices.blockUser(walletId);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: result.message,
+    data: result,
+  });
+});
+const unBlockUser = catchAsync(async (req: Request, res: Response) => {
+  const walletId = req.params.id;
+
+  const result = await UserServices.unblockUser(walletId);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: result.message,
+    data: result,
+  });
+});
+
 const approveAgent = catchAsync(async (req, res) => {
   const agentId = req.params.id;
   const result = await UserServices.approveAgent(agentId);
@@ -124,6 +148,8 @@ export const UserControllers = {
   updateUser,
   getAllUsers,
   getSingleUser,
+  blockUser,
+  unBlockUser,
   approveAgent,
   suspendAgent,
   getMe,

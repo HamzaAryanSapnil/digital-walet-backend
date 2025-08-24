@@ -20,6 +20,17 @@ router.patch(
 );
 
 router.patch(
+  "/user/block/:id",
+  checkAuth(Role.ADMIN),
+  UserControllers.blockUser
+);
+router.patch(
+  "/user/unblock/:id",
+  checkAuth(Role.ADMIN),
+  UserControllers.unBlockUser
+);
+
+router.patch(
   "/agents/suspend/:id",
   checkAuth(Role.ADMIN),
   UserControllers.suspendAgent

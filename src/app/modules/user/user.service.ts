@@ -7,14 +7,26 @@ import { IAuthProvider, IUser, Role, UserStatus } from "./user.interface";
 import AppError from "../../error-helpers/app-error";
 import { Wallet } from "../wallet/wallet.model";
 import { WalletStatus } from "../wallet/wallet.interface";
+import { QueryBuilder } from "../../utils/QueryBuilder";
 
-const getAllUsers = async () => {
-  const users = await User.find({});
-  const totalUsers = await User.countDocuments();
+const getAllUsers = async (query: Record<string, string>) => {
+  const queryBuilder = new QueryBuilder(User.find().select("-password"), query)
+  const allUsers = await queryBuilder
+    .filter()
+    .search(["name", "email", "role", "phone", "status"])
+    .sort()
+    .fields()
+    .paginate()
+    .build();
+
+    const meta = await queryBuilder.getMeta();
+
+  // const users = await User.find({});
+  // const totalUsers = await User.countDocuments();
   return {
-    data: users,
+    data: allUsers,
     meta: {
-      total: totalUsers,
+      total: meta,
     },
   };
 };

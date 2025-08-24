@@ -7,15 +7,32 @@ import { IAuthProvider, IUser, Role, UserStatus } from "./user.interface";
 import AppError from "../../error-helpers/app-error";
 import { Wallet } from "../wallet/wallet.model";
 import { WalletStatus } from "../wallet/wallet.interface";
+import { QueryBuilder } from "../../utils/QueryBuilder";
 
-const getAllUsers = async () => {
-  const users = await User.find({});
-  const totalUsers = await User.countDocuments();
+
+const userSearchableFields = ["name", "email", "role", "phone", "status"];
+const getAllUsers = async (query: Record<string, string>) => {
+  const queryBuilder = await new QueryBuilder(
+    User.find().select("-password"),
+    query ?? {}
+  );
+  const allUsers = queryBuilder
+    .filter()
+    .search(userSearchableFields)
+    .sort()
+    .fields()
+    .paginate();
+
+  const [data, meta] = await Promise.all([
+    allUsers.build(),
+    queryBuilder.getMeta(),
+  ]);
+
+  // const users = await User.find({});
+  // const totalUsers = await User.countDocuments();
   return {
-    data: users,
-    meta: {
-      total: totalUsers,
-    },
+    data,
+    meta
   };
 };
 const getSingleUser = async (id: string) => {
@@ -25,8 +42,8 @@ const getSingleUser = async (id: string) => {
   };
 };
 const getMe = async (userId: string) => {
-  const user = await User.findById(userId).select("-password"); 
- 
+  const user = await User.findById(userId).select("-password");
+
   return {
     data: user,
   };
@@ -57,8 +74,6 @@ const createUser = async (payload: Partial<IUser>) => {
     balance: 50,
     status: WalletStatus.ACTIVE, // optional if default in schema
   });
-
- 
 
   return user;
 };
@@ -140,7 +155,6 @@ const suspendAgent = async (agentId: string) => {
 
   return { message: "Agent suspended", agentId };
 };
-
 
 export const UserServices = {
   createUser,

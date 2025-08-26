@@ -14,13 +14,13 @@ const getMyTransactions = catchAsync(async (req: Request, res: Response) => {
     query as Record<string, string>
   );
 
-   sendResponse(res, {
-     statusCode: 200,
-     success: true,
-     message: "All Transactions retrieved successfully",
-     data: result.data,
-     meta: result.meta,
-   });
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "All Transactions retrieved successfully",
+    data: result.data,
+    meta: result.meta,
+  });
 });
 
 const getAllTransactions = catchAsync(

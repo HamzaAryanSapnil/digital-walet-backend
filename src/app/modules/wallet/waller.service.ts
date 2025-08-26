@@ -1,4 +1,3 @@
-
 import httpStatus from "http-status-codes";
 import AppError from "../../error-helpers/app-error";
 import { Types } from "mongoose";
@@ -8,11 +7,26 @@ import { WalletStatus } from "./wallet.interface";
 import { Role } from "../user/user.interface";
 import { logTransaction } from "../transaction/transaction.service";
 import { TransactionType } from "../transaction/transaction.interface";
+import { QueryBuilder } from "../../utils/QueryBuilder";
 
+const walletSearchableFields = ["balance", "status"];
+const getAllWallets = async (query: Record<string, string>) => {
+  const queryBuilder = await new QueryBuilder(Wallet.find(), query ?? {});
+  const allWallets = queryBuilder
+    .filter()
+    .search(walletSearchableFields)
+    .sort()
+    .fields()
+    .paginate();
 
-
-const getAllWallets = async () => {
-  return await Wallet.find({}).sort({ createdAt: -1 });
+  const [data, meta] = await Promise.all([
+    allWallets.build(),
+    queryBuilder.getMeta(),
+  ]);
+  return {
+    data,
+    meta,
+  };
 };
 
 const getMyWallet = async (userId: Types.ObjectId) => {
@@ -43,12 +57,11 @@ const deposit = async (userId: Types.ObjectId, amount: number) => {
   wallet.balance += amount;
   await wallet.save();
 
-   await logTransaction({
-     type: TransactionType.ADD_MONEY,
-     amount,
-     from: userId,
-   });
-
+  await logTransaction({
+    type: TransactionType.ADD_MONEY,
+    amount,
+    from: userId,
+  });
 
   return wallet;
 };
@@ -130,24 +143,23 @@ const sendMoney = async (
     throw new AppError(httpStatus.FORBIDDEN, "Receiver wallet is blocked");
   }
 
- 
   senderWallet.balance -= amount;
   receiverWallet.balance += amount;
 
   await senderWallet.save();
   await receiverWallet.save();
 
-   await logTransaction({
-     type: TransactionType.SEND_MONEY,
-     amount,
-     from: senderId,
-     to: receiverUser._id,
-   });
+  await logTransaction({
+    type: TransactionType.SEND_MONEY,
+    amount,
+    from: senderId,
+    to: receiverUser._id,
+  });
 
   return {
     message: "Money sent successfully",
     senderBalance: senderWallet.balance,
-    receiverPhone, 
+    receiverPhone,
     amount,
   };
 };
@@ -181,7 +193,6 @@ const cashInToUserWallet = async (
     throw new AppError(httpStatus.FORBIDDEN, "User wallet is blocked");
   }
 
-
   const commission = amount * (agent.commissionRate || 0);
 
   userWallet.balance += amount;
@@ -193,7 +204,6 @@ const cashInToUserWallet = async (
     from: agentId,
     to: user._id,
     commission,
-     
   });
 
   return {
@@ -201,7 +211,7 @@ const cashInToUserWallet = async (
     userPhone,
     addedAmount: amount,
     newBalance: userWallet.balance,
-    commission
+    commission,
   };
 };
 
@@ -238,28 +248,25 @@ const cashOutFromUserWallet = async (
     throw new AppError(httpStatus.BAD_REQUEST, "User has insufficient balance");
   }
 
-
   const commission = Number((amount * 0.01).toFixed(2));
 
   userWallet.balance -= amount;
   await userWallet.save();
 
-
-  const agentWallet = await Wallet.findOne({user: agentId })
+  const agentWallet = await Wallet.findOne({ user: agentId });
   if (!agentWallet) {
-    throw new AppError(httpStatus.NOT_FOUND, "Agent Wallet not found")
+    throw new AppError(httpStatus.NOT_FOUND, "Agent Wallet not found");
   }
 
   agentWallet.balance += commission;
   await agentWallet.save();
-
 
   await logTransaction({
     type: TransactionType.CASH_OUT,
     amount,
     from: user._id,
     to: agentId,
-    commission
+    commission,
   });
 
   return {
@@ -268,10 +275,9 @@ const cashOutFromUserWallet = async (
     withdrawnAmount: amount,
     remainingBalance: userWallet.balance,
     commission,
-    agentBalance: agentWallet.balance
+    agentBalance: agentWallet.balance,
   };
 };
-
 
 const blockWallet = async (walletId: string) => {
   const wallet = await Wallet.findById(walletId);
@@ -304,8 +310,6 @@ const unblockWallet = async (walletId: string) => {
     status: wallet.status,
   };
 };
-
-
 
 export const WalletServices = {
   getMyWallet,

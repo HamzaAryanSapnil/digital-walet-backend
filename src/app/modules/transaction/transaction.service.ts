@@ -42,7 +42,7 @@ const getMyTransactions = async (userId: string) => {
   }).sort({ createdAt: -1 });
 };
 
-const transactionSearchableFields = ["type", "amount", "status"];
+const transactionSearchableFields = ["type", "status"];
 const getAllTransactions = async (query: Record<string, string>) => {
   const queryBuilder = await new QueryBuilder(Transaction.find(), query ?? {});
   const allTransactions = queryBuilder

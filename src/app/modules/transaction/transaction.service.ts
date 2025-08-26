@@ -36,14 +36,33 @@ export const logTransaction = async ({
   const transaction = await Transaction.create(txnData);
   return transaction;
 };
+const transactionSearchableFields = ["type", "status"];
+const getMyTransactions = async ( userId : string, query: Record<string, string>) => {
 
-const getMyTransactions = async (userId: string) => {
-  return await Transaction.find({
-    $or: [{ from: userId }, { to: userId }],
-  }).sort({ createdAt: -1 });
+  const queryBuilder = await new QueryBuilder(
+    Transaction.find({
+      $or: [{ from: userId }, { to: userId }],
+    }),
+    query ?? {}
+  );
+  const myAllTransactions = queryBuilder
+    .filter()
+    .search(transactionSearchableFields)
+    .sort()
+    .fields()
+    .paginate();
+  const [data, meta] = await Promise.all([
+    myAllTransactions.build(),
+    queryBuilder.getMeta(),
+  ]);
+
+  return {
+    data,
+    meta,
+  };
 };
 
-const transactionSearchableFields = ["type", "status"];
+
 const getAllTransactions = async (query: Record<string, string>) => {
   const queryBuilder = await new QueryBuilder(Transaction.find(), query ?? {});
   const allTransactions = queryBuilder

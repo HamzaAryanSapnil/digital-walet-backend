@@ -9,7 +9,7 @@ import { logTransaction } from "../transaction/transaction.service";
 import { TransactionType } from "../transaction/transaction.interface";
 import { QueryBuilder } from "../../utils/QueryBuilder";
 
-const walletSearchableFields = ["type", "status"];
+const walletSearchableFields = ["balance", "status"];
 const getAllWallets = async (query: Record<string, string>) => {
   const queryBuilder = await new QueryBuilder(Wallet.find(), query ?? {});
   const allWallets = queryBuilder

@@ -13,6 +13,29 @@ router.get(
   UserControllers.getAllUsers
 );
 
+
+
+// Admin view all transactions
+router.get(
+  "/all-transaction",
+  checkAuth(Role.ADMIN),
+  TransactionControllers.getAllTransactions
+);
+router.get(
+  "/transactions-summery",
+  checkAuth(Role.ADMIN),
+  TransactionControllers.getDailyTransactionAggregate
+);
+router.get(
+  "/all-wallets",
+  checkAuth(Role.ADMIN),
+  WalletControllers.getAllWallets
+);
+
+
+
+
+
 router.patch(
   "/agents/approve/:id",
   checkAuth(Role.ADMIN),
@@ -49,16 +72,6 @@ router.patch(
   WalletControllers.unblockWallet
 );
 
-// Admin view all transactions
-router.get(
-  "/all-transaction",
-  checkAuth(Role.ADMIN),
-  TransactionControllers.getAllTransactions
-);
-router.get(
-  "/all-wallets",
-  checkAuth(Role.ADMIN),
-  WalletControllers.getAllWallets
-);
+
 
 export const AdminRoutes = router;

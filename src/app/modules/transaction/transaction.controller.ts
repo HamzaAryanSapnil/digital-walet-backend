@@ -19,37 +19,37 @@ const getMyTransactions = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const getAllTransactions = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-  const query = req.query;
-      const result = await TransactionServices.getAllTransactions(
-        query as Record<string, string>
-      );
+const getAllTransactions = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const query = req.query;
+    const result = await TransactionServices.getAllTransactions(
+      query as Record<string, string>
+    );
 
-  sendResponse(res, {
-    statusCode: 200,
-    success: true,
-    message: "All Transactions retrieved successfully",
-    data: result.data,
-    meta: result.meta,
-  });
-});
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "All Transactions retrieved successfully",
+      data: result.data,
+      meta: result.meta,
+    });
+  }
+);
 
 const getAgentCommissions = catchAsync(async (req: Request, res: Response) => {
   const agent = req.user as JwtPayload;
   const result = await TransactionServices.getAgentCommission(agent.userId);
 
   if (result.length === 0) {
-   return sendResponse(res, {
+    return sendResponse(res, {
       success: true,
       statusCode: httpStatus.OK,
       message: "You don't have any commissions yet",
       data: result,
     });
-
-
   }
 
- return sendResponse(res, {
+  return sendResponse(res, {
     success: true,
     statusCode: httpStatus.OK,
     message: "Agent commission history retrieved successfully",
@@ -57,8 +57,26 @@ const getAgentCommissions = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+export const getDailyTransactionAggregate = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const query = req.query;
+    const aggregated = await TransactionServices.getDailyTransactionAggregate(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      query as Record<string, any>
+    );
+
+    return sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Daily transaction aggregate retrieved successfully",
+      data: aggregated,
+    });
+  }
+);
+
 export const TransactionControllers = {
   getMyTransactions,
   getAllTransactions,
   getAgentCommissions,
+  getDailyTransactionAggregate,
 };

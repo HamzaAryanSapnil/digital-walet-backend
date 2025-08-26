@@ -89,9 +89,7 @@ const updateUser = async (
     throw new AppError(httpStatus.NOT_FOUND, "User not found");
   }
 
-  if (isUserExists.status === UserStatus.BLOCKED) {
-    throw new AppError(httpStatus.FORBIDDEN, "This user cannot be updated");
-  }
+  
 
   if (payload.role) {
     if (decodedToken.role === Role.USER || decodedToken.role === Role.AGENT) {

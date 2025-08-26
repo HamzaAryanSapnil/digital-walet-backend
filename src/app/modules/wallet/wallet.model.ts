@@ -6,7 +6,7 @@ import { IWallet, WalletStatus } from "./wallet.interface";
 
 const walletSchema = new Schema<IWallet>(
   {
-    user: { type: Schema.Types.ObjectId, ref: "User", required: true }, // reference
+    user: { type: Schema.Types.ObjectId, ref: "User", required: true }, 
     balance: { type: Number, required: true },
     status: {
       type: String,

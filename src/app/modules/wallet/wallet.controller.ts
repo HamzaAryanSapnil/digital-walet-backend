@@ -50,8 +50,9 @@ const depositToMyWallet = catchAsync(async (req: Request, res: Response) => {
 
 const withdrawFromMyWallet = catchAsync(async (req: Request, res: Response) => {
   const user = req.user as JwtPayload;
-  const amount = req.body.amount;
-  const result = await WalletServices.withdraw(user.userId, amount);
+  const amount = req?.body?.amount;
+  const agentNumber = req?.body?.agentNumber;
+  const result = await WalletServices.withdraw(user.userId, amount, agentNumber);
 
   sendResponse(res, {
     success: true,

@@ -66,12 +66,17 @@ const deposit = async (userId: Types.ObjectId, amount: number) => {
   return wallet;
 };
 
-const withdraw = async (userId: Types.ObjectId, amount: number) => {
+const withdraw = async (
+  userId: Types.ObjectId,
+  amount: number,
+  agentNumber: number
+) => {
+  const wallet = await Wallet.findOne({ user: userId });
+  const agent = await User.findOne({ phone: agentNumber, role: Role.AGENT });
+
   if (amount <= 0) {
     throw new AppError(httpStatus.BAD_REQUEST, "Amount must be greater than 0");
   }
-
-  const wallet = await Wallet.findOne({ user: userId });
 
   if (!wallet) {
     throw new AppError(httpStatus.NOT_FOUND, "Wallet not found");
@@ -85,8 +90,24 @@ const withdraw = async (userId: Types.ObjectId, amount: number) => {
     throw new AppError(httpStatus.BAD_REQUEST, "Insufficient balance");
   }
 
+  if (!agent) {
+    throw new AppError(httpStatus.NOT_FOUND, "Agent not found");
+  }
+  if (!agent.isApproved) {
+    throw new AppError(httpStatus.FORBIDDEN, "Agent is not approved");
+  }
+
   wallet.balance -= amount;
   await wallet.save();
+
+  const commission = Number((amount * 0.01).toFixed(2));
+  const agentWallet = await Wallet.findOne({ user: agent._id });
+  if (!agentWallet) {
+    throw new AppError(httpStatus.NOT_FOUND, "Agent Wallet not found");
+  }
+
+  agentWallet.balance += commission;
+  await agentWallet.save();
 
   await logTransaction({
     type: TransactionType.WITHDRAW,

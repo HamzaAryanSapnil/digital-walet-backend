@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Transaction } from "./transaction.model";
 import {
   ITransaction,
@@ -69,10 +70,76 @@ const getAgentCommission = async (agentId: string) => {
     type: TransactionType.CASH_OUT,
   }).sort({ createdAt: -1 });
 };
+ 
+const getDailyTransactionAggregate = async (
+  query: Record<string, any>
+) => {
+  const { from, to, type, status } = query as Record<
+    string,
+    string | undefined
+  >;
+
+  // Build match object based on optional query params
+  const match: Record<string, any> = {};
+
+  if (type) match.type = type;
+  if (status) match.status = status;
+
+  if (from || to) {
+    match.createdAt = {};
+    if (from) {
+      match.createdAt.$gte = new Date(from);
+    }
+    if (to) {
+      const toDate = new Date(to);
+      toDate.setHours(23, 59, 59, 999);
+      match.createdAt.$lte = toDate;
+    }
+  }
+
+  // Aggregation pipeline
+  const pipeline: any[] = [
+    { $match: match },
+    // convert createdAt to YYYY-MM-DD in Asia/Dhaka timezone
+    {
+      $addFields: {
+        dateOnly: {
+          $dateToString: {
+            format: "%Y-%m-%d",
+            date: "$createdAt",
+            timezone: "Asia/Dhaka",
+          },
+        },
+      },
+    },
+    {
+      $group: {
+        _id: "$dateOnly",
+        transactions: { $sum: 1 },
+        volume: { $sum: "$amount" },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        date: "$_id",
+        transactions: 1,
+        volume: 1,
+      },
+    },
+    { $sort: { date: 1 } }, 
+  ];
+
+  const aggregated = await Transaction.aggregate(pipeline).exec();
+
+
+  return aggregated;
+};
 
 export const TransactionServices = {
   logTransaction,
   getMyTransactions,
   getAllTransactions,
   getAgentCommission,
+  getDailyTransactionAggregate,
 };

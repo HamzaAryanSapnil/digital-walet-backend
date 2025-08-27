@@ -26,8 +26,8 @@ const credentialsLogin = catchAsync(
 
       const userTokens = createUserTokens(user);
 
-       const userDoc = user.toObject();
-       const { password, ...rest } = userDoc;
+      const userDoc = user.toObject();
+      const { password, ...rest } = userDoc;
 
       setAuthCookie(res, userTokens);
 
